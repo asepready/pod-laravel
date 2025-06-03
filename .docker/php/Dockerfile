@@ -1,7 +1,7 @@
 FROM php:8.2-fpm
 
 COPY php.ini /usr/local/etc/php/
-COPY container.conf /usr/local/etc/php-fpm.d/container.conf
+COPY docker.conf /usr/local/etc/php-fpm.d/docker.conf
 COPY .bashrc /root/
 
 # Copy the entrypoint script
