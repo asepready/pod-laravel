@@ -1,10 +1,11 @@
+version: "3"
 name: laravel
+
 services:
   ####################################################################################################
   # PHP
   ####################################################################################################
   php:
-    container_name: php
     build: .docker/php
     ports:
       - 5173:5173
@@ -15,7 +16,6 @@ services:
   # Nginx
   ####################################################################################################
   nginx:
-    container_name: nginx
     image: nginx
     ports:
       - 80:80
@@ -30,7 +30,6 @@ services:
   # DATABASE (MySQL)
   ####################################################################################################
   db:
-    container_name: db
     image: mysql:8.1
     ports:
       - 3306:3306
@@ -41,15 +40,32 @@ services:
       - .docker/db/sql:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: laraveldb
-      MYSQL_USER: larauser
-      MYSQL_PASSWORD: larapass
+      MYSQL_DATABASE: refactorian
+      MYSQL_USER: refactorian
+      MYSQL_PASSWORD: refactorian
+
+  # ####################################################################################################
+  # # DATABASE (MariaDB)
+  # ####################################################################################################
+  # db:
+  #     image: mariadb:10.11
+  #     ports:
+  #         - 3306:3306
+  #     volumes:
+  #         - .docker/db/data:/var/lib/mysql
+  #         - .docker/logs:/var/log/mysql
+  #         - .docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+  #         - .docker/db/sql:/docker-entrypoint-initdb.d
+  #     environment:
+  #         MYSQL_ROOT_PASSWORD: root
+  #         MYSQL_DATABASE: laravel_db_name
+  #         MYSQL_USER: laravel_db_user
+  #         MYSQL_PASSWORD: laravel_db_pass
 
   ####################################################################################################
   # phpMyAdmin
   ####################################################################################################
   phpmyadmin:
-    container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
     ports:
       - 8080:80
@@ -60,13 +76,12 @@ services:
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
     volumes:
-      - .docker/phpmyadmin/sessions:/sessions:Z
+      - .docker/phpmyadmin/sessions:/sessions
 
   ####################################################################################################
   # Adminer
   ####################################################################################################
   adminer:
-    container_name: adminer
     image: adminer
     ports:
       - 7070:8080
@@ -77,7 +92,6 @@ services:
   # Mailpit
   ####################################################################################################
   mail:
-    container_name: mailpit
     image: axllent/mailpit:latest
     ports:
       - 8025:8025
@@ -87,56 +101,9 @@ services:
   # Redis
   ####################################################################################################
   redis:
-    container_name: redis
     image: redis:latest
     command: redis-server --appendonly yes
     volumes:
       - .docker/redis/data:/data
     ports:
       - 6379:6379
-
-  # ####################################################################################################
-  # # DATABASE (MariaDB)
-  # ####################################################################################################
-  # db:
-  #     image: mariadb:10.11
-  #     ports:
-  #         - 3306:3306
-  #     volumes:
-  #         - .container/db/data:/var/lib/mysql
-  #         - .container/logs:/var/log/mysql
-  #         - .container/db/my.cnf:/etc/mysql/conf.d/my.cnf
-  #         - .container/db/sql:/docker-entrypoint-initdb.d
-  #     environment:
-  #         MYSQL_ROOT_PASSWORD: root
-  #         MYSQL_DATABASE: laraveldb
-  #         MYSQL_USER: larauser
-  #         MYSQL_PASSWORD: larapass
-
-  ####################################################################################################
-  # PostgreSQL
-  ####################################################################################################
-  # db:
-  #     image: postgres:16
-  #     ports:
-  #         - 5432:5432
-  #     volumes:
-  #         - .container/db/data:/var/lib/postgresql/data
-  #         - .container/db/sql:/docker-entrypoint-initdb.d
-  #     environment:
-  #         - POSTGRES_USER=larauser
-  #         - POSTGRES_PASSWORD=larapass
-  #         - POSTGRES_DB=laraveldb
-
-  ####################################################################################################
-  # pgAdmin
-  ####################################################################################################
-  # pgadmin:
-  #     image: dpage/pgadmin4
-  #     ports:
-  #         - 5050:80
-  #     environment:
-  #         - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-  #         - PGADMIN_DEFAULT_PASSWORD=password
-  #     depends_on:
-  #         - db
