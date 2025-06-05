@@ -11,7 +11,7 @@ services:
     volumes:
       - .:/var/www:cached
     networks:
-      lara-net:
+      bridge:
   ####################################################################################################
   # Nginx
   ####################################################################################################
@@ -27,13 +27,13 @@ services:
     depends_on:
       - php
     networks:
-      lara-net:
+      bridge:
   ####################################################################################################
   # DATABASE (MySQL)
   ####################################################################################################
-  db:
-    container_name: db
-    image: mysql:8.1
+  mysql:
+    container_name: mysql
+    image: mysql/mysql-server:${MYSQL_VERSION:-8.0}
     ports:
       - 3306:3306
     volumes:
@@ -42,12 +42,13 @@ services:
       - .docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
       - .docker/db/sql:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: refactorian
-      MYSQL_USER: refactorian
-      MYSQL_PASSWORD: refactorian
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     networks:
-      lara-net:
+      bridge:
   # ####################################################################################################
   # # DATABASE (MariaDB)
   # ####################################################################################################
@@ -66,7 +67,7 @@ services:
   #         MYSQL_USER: laravel_db_user
   #         MYSQL_PASSWORD: laravel_db_pass
   #  networks:
-  #    lara-net:
+  #    bridge:
   ####################################################################################################
   # phpMyAdmin
   ####################################################################################################
@@ -76,7 +77,7 @@ services:
     ports:
       - 8080:80
     linked_to:
-      - db
+      - mysql
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
@@ -84,7 +85,7 @@ services:
     volumes:
       - .docker/phpmyadmin/sessions:/sessions:Z
     networks:
-      lara-net:
+      bridge:
   ####################################################################################################
   # Adminer
   ####################################################################################################
@@ -94,9 +95,9 @@ services:
     ports:
       - 7070:8080
     depends_on:
-      - db
+      - mysql
     networks:
-      lara-net:
+      bridge:
   ####################################################################################################
   # Mailpit
   ####################################################################################################
@@ -107,21 +108,21 @@ services:
       - 8025:8025
       - 1025:1025
     networks:
-      lara-net:
+      bridge:
   ####################################################################################################
   # Redis
   ####################################################################################################
   redis:
     container_name: redis
-    image: redis:latest
+    image: redis:alpine
     command: redis-server --appendonly yes
     volumes:
       - .docker/redis/data:/data
     ports:
       - 6379:6379
     networks:
-      lara-net:
+      bridge:
 # Networks
 networks:
-  lara-net:
+  bridge:
     driver: bridge

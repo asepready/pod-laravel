@@ -1,5 +1,6 @@
 services:
-  web:
+  apps:
+    container_name: apps
     build:
       context: ./
       dockerfile: ./.docker/php/Dockerfile.local
@@ -10,13 +11,15 @@ services:
       - ./:${WORKDIR}
       - ./vendor/:${WORKDIR}/vendor
     networks:
-      - lara-net
+      - bridge
     depends_on:
       - mysql
       - redis
       - minio
       - mailpit
+
   mysql:
+    container_name: mysql
     image: mysql/mysql-server:${MYSQL_VERSION:-8.0}
     ports:
       - ${FORWARD_DB_PORT:-3306}:3306
@@ -30,7 +33,7 @@ services:
     volumes:
       - ${DB_VOLUME_LOCAL:-./database/mysql-test-data}:/var/lib/mysql
     networks:
-      - lara-net
+      - bridge
     healthcheck:
       test:
         - CMD
@@ -39,6 +42,23 @@ services:
         - -p${DB_PASSWORD}
       retries: 3
       timeout: 5s
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8080:80
+    linked_to:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    volumes:
+      - .docker/phpmyadmin/sessions:/sessions:Z
+    networks:
+      bridge:
+
   redis:
     image: redis:alpine
     ports:
@@ -46,7 +66,7 @@ services:
     volumes:
       - ${REDIS_VOLUME_LOCAL:-./database/redis-data}:/data
     networks:
-      - lara-net
+      - bridge
     healthcheck:
       test:
         - CMD
@@ -54,6 +74,7 @@ services:
         - ping
       retries: 3
       timeout: 5s
+
   minio:
     image: minio/minio:latest
     ports:
@@ -65,7 +86,7 @@ services:
     volumes:
       - ${MINIO_VOLUME_LOCAL:-./storage/minio-data}:/data
     networks:
-      - lara-net
+      - bridge
     command: minio server /data/minio --console-address ":${FORWARD_MINIO_CONSOLE_PORT}"
     healthcheck:
       test:
@@ -75,6 +96,7 @@ services:
         - http://localhost:${FORWARD_MINIO_PORT}/minio/health/live
       retries: 3
       timeout: 5s
+
   mailpit:
     image: axllent/mailpit:latest
     ports:
@@ -83,7 +105,8 @@ services:
     volumes:
       - ${MP_VOLUME_LOCAL:-./storage/mail-data}:/data
     networks:
-      - lara-net
+      - bridge
+
 networks:
-  lara-net:
+  bridge:
     driver: bridge
