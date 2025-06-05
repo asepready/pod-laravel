@@ -1,12 +1,10 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-# Laravel Docker Starter Kit
+# Laravel Podman Starter Kit
 
 -   Laravel v9.x
 -   PHP v8.0.2.x
 -   MySQL v8.1.x (default)
--   MariaDB v10.11.x
--   PostgreSQL v16.x
 -   pgAdmin v4.x
 -   phpMyAdmin v5.x
 -   Mailpit v1.x
@@ -17,24 +15,19 @@
 -   Rector v1.x
 -   Redis v7.2.x
 
-# Requirements
-
--   Stable version of [Docker](https://docs.docker.com/engine/install/)
--   Compatible version of [Docker Compose](https://docs.docker.com/compose/install/#install-compose)
-
 # How To Deploy
 
 ### For first time only !
 
--   `git clone https://github.com/asepready/pod-laravel.git`
--   `cd laravel-docker`
--   `docker compose up -d --build`
--   `docker compose exec php bash`
+-   `git clone https://github.com/podmanbest/laravel.git`
+-   `cd laravel`
+-   `podman compose up -d --build`
+-   `podman compose exec php bash`
 -   `composer setup`
 
 ### From the second time onwards
 
--   `docker compose up -d`
+-   `podman compose up -d`
 
 # Notes
 
@@ -67,20 +60,20 @@
 -   Password: `larapass`
 -   Database: `laraveldb`
 
-### Basic docker compose commands
+### Basic podman compose commands
 
 -   Build or rebuild services
-    -   `docker compose build`
+    -   `podman compose build`
 -   Create and start containers
-    -   `docker compose up -d build`
+    -   `podman compose up -d build`
 -   Stop and remove containers, networks
-    -   `docker compose down`
+    -   `podman compose down`
 -   Stop all services
-    -   `docker compose stop`
+    -   `podman compose stop`
 -   Restart service containers
-    -   `docker compose restart`
+    -   `podman compose restart`
 -   Run a command inside a container
-    -   `docker compose exec [container] [command]`
+    -   `podman compose exec [container] [command]`
 
 ### Useful Laravel Commands
 
@@ -133,7 +126,3 @@
 -   [Laravel Sail](https://laravel.com/docs/master/sail)
 -   [Laravel Herd](https://herd.laravel.com/)
 -   [Laradock](https://laradock.io/)
-
-# Run by Podman
-
--   podman play kube ./pod-db.yaml
