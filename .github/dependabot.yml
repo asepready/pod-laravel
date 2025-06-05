@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "composer"
-    directory: "/"
+    directory: "/sources/"
     schedule:
       interval: "weekly"
     groups:
@@ -15,7 +15,7 @@ updates:
       development-dependencies:
         dependency-type: "development"
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/sources/"
     schedule:
       interval: "weekly"
     groups:
