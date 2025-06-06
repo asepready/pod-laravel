@@ -38,17 +38,17 @@ $ copy .env.example .env
 
 Edit the `.env` file to configure your application settings. At a minimum, you should set the following variables:
 
-- `APP_NAME`: The name of your application.
-- `APP_ENV`: The environment your application is running in (e.g., local, production).
-- `APP_KEY`: The application key (will be generated in the next step).
-- `APP_DEBUG`: Set to `true` for debugging.
-- `APP_URL`: The URL of your application.
-- `DB_CONNECTION`: The database connection (e.g., mysql).
-- `DB_HOST`: The database host.
-- `DB_PORT`: The database port.
-- `DB_DATABASE`: The database name.
-- `DB_USERNAME`: The database username.
-- `DB_PASSWORD`: The database password.
+-   `APP_NAME`: The name of your application.
+-   `APP_ENV`: The environment your application is running in (e.g., local, production).
+-   `APP_KEY`: The application key (will be generated in the next step).
+-   `APP_DEBUG`: Set to `true` for debugging.
+-   `APP_URL`: The URL of your application.
+-   `DB_CONNECTION`: The database connection (e.g., mysql).
+-   `DB_HOST`: The database host.
+-   `DB_PORT`: The database port.
+-   `DB_DATABASE`: The database name.
+-   `DB_USERNAME`: The database username.
+-   `DB_PASSWORD`: The database password.
 
 **Edit docker related setting according to your preferences.**
 
@@ -99,7 +99,6 @@ $ docker compose logs <container_name>
 **If you are using podman replace `docker` with `podman`**
 
 To access the application, open your browser and navigate to the URL specified in the `APP_URL` variable in your `.env` file.
-
 
 ## Upgrading
 
