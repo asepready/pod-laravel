@@ -1,8 +1,11 @@
+---
+name: lara12
 services:
     web:
         build:
             context: ./
             dockerfile: ./.docker/php/Dockerfile.local
+        container_name: lara12-web
         ports:
             - ${APP_PORT:-8000}:8000
             - ${VITE_PORT:-5173}:${VITE_PORT:-5173}
@@ -10,13 +13,14 @@ services:
             - ./:${WORKDIR}
             - ./vendor/:${WORKDIR}/vendor
         networks:
-            - lara11-beta
+            - lara12net
         depends_on:
             - mysql
             - redis
             - minio
             - mailpit
     mysql:
+        container_name: mysql
         image: mysql/mysql-server:${MYSQL_VERSION:-8.0}
         ports:
             - ${FORWARD_DB_PORT:-3306}:3306
@@ -30,7 +34,7 @@ services:
         volumes:
             - ${DB_VOLUME_LOCAL:-./database/mysql-test-data}:/var/lib/mysql
         networks:
-            - lara11-beta
+            - lara12net
         healthcheck:
             test:
                 - CMD
@@ -40,13 +44,14 @@ services:
             retries: 3
             timeout: 5s
     redis:
+        container_name: redis
         image: redis:alpine
         ports:
             - ${FORWARD_REDIS_PORT:-6379}:6379
         volumes:
             - ${REDIS_VOLUME_LOCAL:-./database/redis-data}:/data
         networks:
-            - lara11-beta
+            - lara12net
         healthcheck:
             test:
                 - CMD
@@ -55,6 +60,7 @@ services:
             retries: 3
             timeout: 5s
     minio:
+        container_name: minio
         image: minio/minio:latest
         ports:
             - ${FORWARD_MINIO_PORT:-9000}:9000
@@ -65,7 +71,7 @@ services:
         volumes:
             - ${MINIO_VOLUME_LOCAL:-./storage/minio-data}:/data
         networks:
-            - lara11-beta
+            - lara12net
         command: minio server /data/minio --console-address ":${FORWARD_MINIO_CONSOLE_PORT}"
         healthcheck:
             test:
@@ -76,6 +82,7 @@ services:
             retries: 3
             timeout: 5s
     mailpit:
+        container_name: mailpit
         image: axllent/mailpit:latest
         ports:
             - ${FORWARD_MAILPIT_PORT:-1025}:1025
@@ -83,7 +90,7 @@ services:
         volumes:
             - ${MP_VOLUME_LOCAL:-./storage/mail-data}:/data
         networks:
-            - lara11-beta
+            - lara12net
 networks:
-    lara11-beta:
+    lara12net:
         driver: bridge
