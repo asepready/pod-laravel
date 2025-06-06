@@ -1,0 +1,28 @@
+# Gunakan Alpine Linux sebagai base image
+FROM alpine:3.20
+
+# Label maintainer
+LABEL maintainer="devops@example.com"
+
+# Install MariaDB (versi 10.x) dari repo Alpine
+RUN apk add --no-cache mariadb mariadb-client
+
+# Buat direktori data untuk MariaDB
+RUN mkdir -p /var/lib/mysql /run/mysqld
+
+# Konfigurasi default MariaDB
+COPY my.cnf /etc/my.cnf
+
+# Ekspor port MariaDB
+EXPOSE 3306
+
+# Copy script inisialisasi
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Tambahkan skrip entrypoint untuk mendukung environment variables
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Set entrypoint dan command
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["mysqld", "--user=mysql", "--console"]
