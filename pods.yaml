@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: laravel
+  namespace: laravel
+  labels:
+    app: laravel
+  ports:
+    - containerPort: 8080
+      hostPort: 8080
+    - containerPort: 80
+      hostPort: 80
+    - containerPort: 443
+      hostPort: 443
+spec:
+  volumes:
+    - name: apps-dir
+      hostPath:
+        path: ./.docker/php
+        type: DirectoryOrCreate
+    - name: http-config
+      hostPath:
+        path: ./.docker/nginx/default.conf
+        path: ./.docker/nginx/nginx.conf
+        type: File
+    - name: http-dir
+      hostPath:
+        path: ./
+        type: DirectoryOrCreate
+    - name: mysql-config
+      hostPath:
+        path: ./.docker/db/my.cnf
+        type: File
+    - name: mysql-dir
+      hostPath:
+        path: ./.docker/db/sql
+        path: ./.docker/db/data
+        path: ./.docker/logs/mysql
+        type: DirectoryOrCreate
+    - name: redis-data
+      hostPath:
+        path: ./.docker/redis/data
+        type: DirectoryOrCreate
+    - name: pma-sessions
+      hostPath:
+        path: ./.docker/phpmyadmin/sessions
+        type: DirectoryOrCreate
+  containers:
+    - name: db
+      image: mysql:8.0
+      ports:
+        - containerPort: 3306
+      volumeMounts:
+        - name: mysql-config
+          mountPath: /etc/mysql/conf.d/my.cnf
+        - name: mysql-dir
+          mountPath: /var/lib/mysql
+          mountPath: /var/log/mysql
+          mountPath: /docker-entrypoint-initdb.d
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "${DB_ROOT_PASSWORD}"
+        - name: MYSQL_PORT
+          value: "${DB_PORT}"
+        - name: MYSQL_DATABASE
+          value: "${DB_DATABASE}"
+        - name: MYSQL_USER
+          value: "${DB_USERNAME}"
+        - name: MYSQL_PASSWORD
+          value: "${DB_PASSWORD}"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "${DB_ROOT_PASSWORD}"
+    - name: redis
+      image: redis:alpine3.16
+      ports:
+        - containerPort: ${REDIS_PORT}
+      volumeMounts:
+        - name: redis-data
+          mountPath: /data
+    - name: php
+      image: php-apps:latest
+      ports:
+        - containerPort: 5173
+      volumeMounts:
+        - name: apps-dir
+          mountPath: /var/www
+    - name: nginx
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+        - hostPort: 80
+      volumeMounts:
+        - name: http-dir
+          mountPath: /var/www
+        - name: http-config
+          mountPath: /etc/nginx/conf.d/default.conff
+          mountPath: /etc/nginx/nginx.conf
+    - name: phpmyadmin
+      image: phpmyadmin:fpm-alpine
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: pma-sessions
+          mountPath: /sessions
+      env:
+        - name: PMA_HOST
+          value: "${DB_HOST}"
+        - name: PMA_PORT
+          value: "${DB_PORT}"
+        - name: UPLOAD_LIMIT
+          value: "5G"
+        - name: PMA_ARBITRARY
+          value: "1"
