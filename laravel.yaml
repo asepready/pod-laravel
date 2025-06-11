@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lr
+  labels:
+    app: lr
+spec:
+  volumes:
+    - name: workdir
+      hostPath:
+        path: ./src
+        type: DirectoryOrCreate
+  containers:
+    - name: php
+      image: php:8.2-fpm-alpine
+      ports:
+        - containerPort: 5173
+      volumeMounts:
+        - name: workdir
+          mountPath: /var/www
+    - name: node
+      image: node:20.19.2-alpine
+      ports:
+        - containerPort: 3000
+      volumeMounts:
+        - name: workdir
+          mountPath: /var/www

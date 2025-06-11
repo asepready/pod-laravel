@@ -5,10 +5,11 @@ if podman pod exists laravel; then
 fi
 
 # Remove old images
-podman rmi -f php-apps 2>/dev/null || true
+podman rmi -f php-fpm 2>/dev/null || true
 
 # build images
-podman build -t php-apps ./.docker/php
+podman build -t php-fpm ./containers/php
+podman build -t node ./containers/node
 
 # create from kube yaml
-podman play kube ./pods.yaml
+podman play kube ./laravel.yaml
