@@ -5,10 +5,10 @@ if podman pod exists laravel; then
 fi
 
 # Remove old images
-podman rmi -f swole 2>/dev/null || true
+podman rmi -f php 2>/dev/null || true
 
 # build images
-podman build -t swole ./containers/php
+podman build -t php ./containers/php
 #podman build -t node ./containers/node
 
 # create from kube yaml
