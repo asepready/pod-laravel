@@ -1,0 +1,4 @@
+mysql/*
+pma/*
+redis/*
+!.gitignore
