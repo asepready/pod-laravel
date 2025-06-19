@@ -3,25 +3,37 @@ FROM php:8.2-fpm-alpine
 ARG user
 ARG uid
 
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 RUN apk update && apk add \
-    curl \
-    libpng-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    shadow  # Add shadow package to install useradd
+  bash \
+  curl \
+  libpng-dev \
+  libxml2-dev \
+  zip \
+  unzip \
+  shadow  # Add shadow package to install useradd
 
 RUN docker-php-ext-install pdo pdo_mysql \
-    && apk --no-cache add nodejs npm \
-    && rm -rf /var/cache/apk/*
+  && apk --no-cache add nodejs npm
 
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+# Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
+
+#USER root
+
+#RUN chmod 777 -R /var/www/
 
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user
 
-EXPOSE 9000
+#entrypoint
+ENTRYPOINT ["entrypoint.sh"]
 WORKDIR /var/www
 
-USER $user
+CMD ["php-fpm"]
