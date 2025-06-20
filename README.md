@@ -2,20 +2,15 @@
 
 # Laravel Starter Kit
 
-- Laravel v12.x
-- PHP v8.4.x
-- MySQL v8.1.x (default)
-- MariaDB v10.11.x
-- PostgreSQL v16.x
-- pgAdmin v4.x
-- phpMyAdmin v5.x
-- Mailpit v1.x
-- Node.js v18.x
-- NPM v10.x
-- Yarn v1.x
-- Vite v5.x
-- Rector v1.x
-- Redis v7.2.x
+- Laravel
+- PHP-FPM
+- MySQL
+- MariaDB
+- PostgreSQL
+- pgAdmin
+- phpMyAdmin
+- Mailpit
+- Redis
 
 # How To Deploy
 
@@ -95,30 +90,3 @@
   - `php artisan schedule:clear-cache`
 - Flush expired password reset tokens
   - `php artisan auth:clear-resets`
-
-### Laravel Pint (Code Style Fixer | PHP-CS-Fixer)
-
-- Format all files
-  - `vendor/bin/pint`
-- Format specific files or directories
-  - `vendor/bin/pint app/Models`
-  - `vendor/bin/pint app/Models/User.php`
-- Format all files with preview
-  - `vendor/bin/pint -v`
-- Format uncommitted changes according to Git
-  - `vendor/bin/pint --dirty`
-- Inspect all files
-  - `vendor/bin/pint --test`
-
-### Rector
-
-- Dry Run
-  - `vendor/bin/rector process --dry-run`
-- Process
-  - `vendor/bin/rector process`
-
-# Alternatives
-
-- [Laravel Sail](https://laravel.com/docs/master/sail)
-- [Laravel Herd](https://herd.laravel.com/)
-- [Laradock](https://laradock.io/)
