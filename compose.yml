@@ -86,12 +86,13 @@ services:
   # Minio #####################################
   minio:
     image: minio/minio:latest
+    container_name: minio
     ports:
       - 9000:9000
       - 8900:8900
     environment:
-      MINIO_ROOT_USER: -sail
-      MINIO_ROOT_PASSWORD: -password
+      MINIO_ROOT_USER: sail
+      MINIO_ROOT_PASSWORD: password
     volumes:
       - ./data/minio:/data:z
     networks:
@@ -156,7 +157,7 @@ services:
       - 9000
     working_dir: /var/www/
     volumes:
-      - ./src:/var/www:cached
+      - ./src:/var/www:cached,z
     depends_on:
       - db
       - redis
